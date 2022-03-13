@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from 'react'
 import { toast } from 'react-toastify'
 import { api } from '../services/api'
-import { Product, Stock } from '../types'
+import { Product } from '../types'
 
 interface CartProviderProps {
   children: ReactNode
@@ -76,7 +76,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         (product) => product.id === productId
       )
 
-      if (productIndex > -0) {
+      if (productIndex >= 0) {
         updatedCart.splice(productIndex, 1)
         setCart(updatedCart)
         localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCart))
@@ -93,7 +93,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
     amount
   }: UpdateProductAmount) => {
     try {
-      if (amount < -0) {
+      if (amount <= 0) {
         return
       }
       const stock = await api.get(`/stock/${productId}`)
@@ -120,6 +120,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       }
     } catch {
       toast.error('Erro na alteração de quantidade do produto')
+      return
     }
   }
 
